@@ -21,6 +21,12 @@ map <C-k> <C-w>k
 map <C-h> <C-w>h
 map <C-l> <C-w>l
 
+" 普通模式下快速移动
+nnoremap <Up> 5k
+nnoremap <Down> 5j
+nnoremap <Left> 5h
+nnoremap <Right> 5l
+
 " 在命令模式下，在底部显示键入的命令
 set showcmd
 " 在底部显示，当前处于命令模式还是插入模式
@@ -30,6 +36,9 @@ set showmode
 "set listchars=tab:»■,trail:■
 set listchars=tab:>-,trail:-
 set list
+
+" 不创建交换文件，这样在vim中使用Gstatus就不会看到.swp文件了。
+set noswapfile
 
 
 call plug#begin('~/.vim/plugged')
@@ -58,6 +67,42 @@ Plug 'honza/vim-snippets'
 
 call plug#end()
 
+" 解决ultisnips与YCM tab冲突问题
+function! g:UltiSnips_Complete()
+  call UltiSnips#ExpandSnippet()
+  if g:ulti_expand_res == 0
+    if pumvisible()
+      return "\<C-n>"
+    else
+      call UltiSnips#JumpForwards()
+      if g:ulti_jump_forwards_res == 0
+        return "\<TAB>"
+      endif
+    endif
+  endif
+  return ""
+endfunction
+
+function! g:UltiSnips_Reverse()
+  call UltiSnips#JumpBackwards()
+  if g:ulti_jump_backwards_res == 0
+    return "\<C-P>"
+  endif
+
+  return ""
+endfunction
+
+
+if !exists("g:UltiSnipsJumpForwardTrigger")
+  let g:UltiSnipsJumpForwardTrigger = "<tab>"
+endif
+if !exists("g:UltiSnipsJumpBackwardTrigger")
+  let g:UltiSnipsJumpBackwardTrigger="<s-tab>"
+endif
+
+au InsertEnter * exec "inoremap <silent> " . g:UltiSnipsExpandTrigger     . " <C-R>=g:UltiSnips_Complete()<cr>"
+au InsertEnter * exec "inoremap <silent> " .     g:UltiSnipsJumpBackwardTrigger . " <C-R>=g:UltiSnips_Reverse()<cr>"
+
 
 """"""""""""""""""""""""""""""""
 "  			插件配置		   "
@@ -80,7 +125,8 @@ map <F2> :NERDTreeToggle<CR>
 autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isTabTree()) | q | endif
 " 是否显示行号
 let g:NERDTreeShowLineNumbers=1
-" 是否显示隐藏文件
+" 是否显示隐藏文件，有人说开启该功能时在NERDTree窗口中按I可以显示因此文件
+" 但是我使用0不开启按I一样可以显示
 let g:NERDTreeHidden=1
 
 "-------rainbow_parenthsis-------"
