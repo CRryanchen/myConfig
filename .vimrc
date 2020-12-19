@@ -43,11 +43,20 @@ set noswapfile
 
 call plug#begin('~/.vim/plugged')
 
+" 插件管理器 vim-plug，这个需要首先手动下载，但是这里也需要添加
+" 不然一旦使用:PlugClan，就会一直报各种错误
 Plug 'junegunn/vim-plug'
 Plug 'preservim/nerdtree'
 Plug 'preservim/nerdcommenter'
 Plug 'kien/rainbow_parentheses.vim'
+
+" 状态栏
 Plug 'vim-airline/vim-airline'
+Plug 'vim-airline/vim-airline-themes' " airline主题
+Plug 'liuchengxu/space-vim-theme' " airline主题
+Plug 'dracula/vim' " airline主题
+
+
 Plug 'tpope/vim-surround'
 Plug 'gcmt/wildfire.vim'
 Plug 'yegappan/taglist'
@@ -63,7 +72,13 @@ Plug 'rdolgushin/gitignore.vim'
 Plug 'Sirver/ultisnips'
 Plug 'honza/vim-snippets'
 
+" 在命令行显示buf信息
+Plug 'bling/vim-bufferline'
+" 主题
+Plug 'theniceboy/vim-deus'
 
+" vim内部异步执行shell命令，并将结果输出到quickfix列表
+Plug 'skywind3000/asyncrun.vim'
 
 call plug#end()
 
@@ -115,6 +130,9 @@ nnoremap <Leader>gc :YcmCompleter GoToDeclaration<CR>
 nnoremap <Leader>gf :YcmCompleter GoToDefinition<CR>
 nnoremap <Leader>gt :YcmCompleter GoToTo<CR>
 nnoremap <Leader>gr :YcmCompleter GoToReferences<CR>
+" 关闭顶部的预览窗口
+set completeopt-=preview
+let g:ycm_add_preview_to_completeopt = 0
 
 "-------NERDTree-------"
 " 设定NERDTree视窗大小
@@ -170,13 +188,13 @@ let g:NERDSpaceDelims = 1
 
 "-------Taglist-------"
 " Ctags可执行文件的路径，千万要写对了，否则显示no such file
-let Tlist_Ctags_Cmd = '/usr/bin/ctags'   
+let Tlist_Ctags_Cmd = '/usr/bin/ctags'
 " 不同时显示多个文件的tag，只显示当前文件的
-let Tlist_Show_One_File = 1            
+let Tlist_Show_One_File = 1
 " 如果taglist窗口是最后一个窗口，则退出vim
-let Tlist_Exit_OnlyWindow = 1          
+let Tlist_Exit_OnlyWindow = 1
 " 打开文件时候不自动打开Taglist窗口
-let Tlist_Auto_Open=0               
+let Tlist_Auto_Open=0
 " 在右侧窗口中显示taglist窗口
 let Tlist_Use_Right_Window = 1
 " 映射F8打开或关闭Taglist
@@ -204,3 +222,21 @@ let g:NERDTreeGitStatusIndicatorMapCustom = {
     \ 'Ignored'   : '☒',
     \ "Unknown"   : "?",
     \ }
+
+"-------nasyncrun.vim -------"
+" 自动打开 quickfix window，高度为6
+let g:asyncrun_open = 6
+" 设置F10 打开/关闭 Quickfix窗口
+nnoremap <F10> :call asyncrun#quickfix_toggle(6)<CR>
+" 设置F9 编译单文件
+nnoremap <silent> <F9> :AsyncRun gcc -Wall -O2 "$(VIM_FILEPATH)" -o "$(VIM_FILEDIR)/$(VIM_FILENOEXT)" <cr>
+" 设置F5 运行
+nnoremap <silent> <F5> :AsyncRun -raw -cwd=$(VIM_FILEDIR) "$(VIM_FILEDIR)/$(VIM_FILENOEXT)" <cr>
+
+" 设置主题为deus
+colorscheme deus
+" 设置airline的启动主题
+let g:airline_theme = 'dracula'
+
+" 状态栏显示git信息
+let g:airline#extensions#branch#enabled = 1
