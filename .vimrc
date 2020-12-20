@@ -15,6 +15,11 @@ set number
 set scrolloff=10
 " 在状态栏显示光标的当前位置
 
+" 在普通模式下按<C-a>或<C-x>会对光标所在行的第一个数字进行加减
+" 但是vim默认对0开头数字解释为八进制，而不是十进制
+" 使用下面设置会让vim将其认为是十进制
+" set nrformats = 
+
 " 关于窗口切换的按键映射
 map <C-j> <C-w>j
 map <C-k> <C-w>k
@@ -26,6 +31,13 @@ nnoremap <Up> 5k
 nnoremap <Down> 5j
 nnoremap <Left> 5h
 nnoremap <Right> 5l
+
+" 缓冲区切换的按键映射 参考自《Vim使用技巧》技巧37中的内容
+nnoremap <silent> [b :bprevious<CR>
+nnoremap <silent> ]b :bnext<CR>
+nnoremap <silent> [B :bfirst<CR>
+nnoremap <silent> ]B :blast<CR>
+
 
 " 在命令模式下，在底部显示键入的命令
 set showcmd
