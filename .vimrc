@@ -20,6 +20,10 @@ set scrolloff=10
 " 使用下面设置会让vim将其认为是十进制
 " set nrformats = 
 
+" 取消shift切换中英文，避免在输入时老是莫名被切换成中文，
+" 导致无法正常使用
+" 所以我将shift改成了alt切换中英文，所以现在可以使用shift切换大小写了
+
 " 关于窗口切换的按键映射
 map <C-j> <C-w>j
 map <C-k> <C-w>k
@@ -51,6 +55,10 @@ set list
 
 " 不创建交换文件，这样在vim中使用Gstatus就不会看到.swp文件了。
 set noswapfile
+
+" 关于搜索的设置
+set hls
+set incsearch
 
 
 call plug#begin('~/.vim/plugged')
@@ -91,6 +99,9 @@ Plug 'theniceboy/vim-deus'
 
 " vim内部异步执行shell命令，并将结果输出到quickfix列表
 Plug 'skywind3000/asyncrun.vim'
+
+" fcitx.vim 解决进入normal时自动切换从英文状态
+" Plug 'vim-scripts/fcitx.vim'
 
 call plug#end()
 
@@ -241,7 +252,7 @@ let g:asyncrun_open = 6
 " 设置F10 打开/关闭 Quickfix窗口
 nnoremap <F10> :call asyncrun#quickfix_toggle(6)<CR>
 " 设置F9 编译单文件
-nnoremap <silent> <F9> :AsyncRun gcc -Wall -O2 "$(VIM_FILEPATH)" -o "$(VIM_FILEDIR)/$(VIM_FILENOEXT)" <cr>
+nnoremap <silent> <F9> :w<CR>:AsyncRun gcc -Wall -O2 "$(VIM_FILEPATH)" -o "$(VIM_FILEDIR)/$(VIM_FILENOEXT)" <cr>
 " 设置F5 运行
 nnoremap <silent> <F5> :AsyncRun -raw -cwd=$(VIM_FILEDIR) "$(VIM_FILEDIR)/$(VIM_FILENOEXT)" <cr>
 
